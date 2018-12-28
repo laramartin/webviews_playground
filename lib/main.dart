@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import 'dart:async';
 
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
-  _onWillPop() {}
+
+  WebViewController _controller;
+
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+
+
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
@@ -26,10 +31,13 @@ class MyApp extends StatelessWidget {
           child: WebView(
             initialUrl: "https://www.github.com",
             javaScriptMode: JavaScriptMode.unrestricted,
+            onWebViewCreated: (WebViewController webViewController) {
+              _controller = webViewController;
+            },
           ),
           onWillPop: () async {
             print("cuando haces pop");
-
+            _controller.goBack();
             return false;
           },
         ),
