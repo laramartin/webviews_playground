@@ -36,9 +36,13 @@ class MyApp extends StatelessWidget {
             },
           ),
           onWillPop: () async {
-            print("cuando haces pop");
-            _controller.goBack();
-            return false;
+            var canGoBack = await _controller.canGoBack();
+            if (canGoBack) {
+              _controller.goBack();
+              return false;
+            } else {
+              return true;
+            }
           },
         ),
         floatingActionButton: FloatingActionButton(onPressed: () {}),
