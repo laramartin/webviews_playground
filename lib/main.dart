@@ -5,15 +5,17 @@ import 'dart:async';
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
-
   WebViewController _controller;
 
+  var _channel = JavascriptChannel(
+      name: 'Print',
+      onMessageReceived: (JavascriptMessage message) {
+        print(message);
+      });
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-
-
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
@@ -27,25 +29,17 @@ class MyApp extends StatelessWidget {
 //        Container(
 //          color: Colors.orange,
 //        ),
-            WillPopScope(
-          child: WebView(
-            initialUrl: "https://www.github.com",
-            javaScriptMode: JavaScriptMode.unrestricted,
-            onWebViewCreated: (WebViewController webViewController) {
-              _controller = webViewController;
-            },
-          ),
-          onWillPop: () async {
-            var canGoBack = await _controller.canGoBack();
-            if (canGoBack) {
-              _controller.goBack();
-              return false;
-            } else {
-              return true;
-            }
+            WebView(
+          initialUrl: "http://192.168.0.55:8000",
+          javascriptMode: JavascriptMode.unrestricted,
+          onWebViewCreated: (WebViewController webViewController) {
+            _controller = webViewController;
           },
+          javascriptChannels: {_channel},
         ),
-        floatingActionButton: FloatingActionButton(onPressed: () {}),
+        floatingActionButton: FloatingActionButton(onPressed: () {
+          _controller.reload();
+        }),
       ),
     );
   }
