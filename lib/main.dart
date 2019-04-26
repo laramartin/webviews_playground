@@ -7,13 +7,6 @@ void main() => runApp(MyApp());
 class MyApp extends StatelessWidget {
   WebViewController _controller;
 
-  var _channel = JavascriptChannel(
-      name: 'Print',
-      onMessageReceived: (JavascriptMessage message) {
-        print(message);
-      });
-
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -24,22 +17,44 @@ class MyApp extends StatelessWidget {
       home: Scaffold(
         appBar: AppBar(
           title: Text("WebViews playground"),
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(Icons.refresh),
+              onPressed: () async {
+                await _controller.reload();
+              },
+            ),
+            IconButton(
+              icon: Icon(Icons.arrow_back),
+              onPressed: () async {
+                if (await _controller.canGoBack()) {
+                  print(Text("can go back!"));
+                  _controller.goBack();
+                } else {
+                  print(Text("cannot go back"));
+                  // TODO: disable button
+                }
+              },
+            ),
+            IconButton(
+              icon: Icon(Icons.arrow_forward),
+              onPressed: () async {
+                if (await _controller.canGoForward()) {
+                  _controller.goForward();
+                } else {
+                  // TODO: disable button
+                }
+              },
+            )
+          ],
         ),
-        body:
-//        Container(
-//          color: Colors.orange,
-//        ),
-            WebView(
-          initialUrl: "http://192.168.0.55:8000",
+        body: WebView(
+          initialUrl: "https://www.flutter.dev/",
           javascriptMode: JavascriptMode.unrestricted,
           onWebViewCreated: (WebViewController webViewController) {
             _controller = webViewController;
           },
-          javascriptChannels: {_channel},
         ),
-        floatingActionButton: FloatingActionButton(onPressed: () {
-          _controller.reload();
-        }),
       ),
     );
   }
