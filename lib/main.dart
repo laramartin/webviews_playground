@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'dart:async';
 
-void main() => runApp(MyApp());
+void main() => runApp(WebViewDemo());
 
-class MyApp extends StatelessWidget {
+class WebViewDemo extends StatelessWidget {
   WebViewController _controller;
 
   @override
@@ -53,6 +53,10 @@ class MyApp extends StatelessWidget {
           javascriptMode: JavascriptMode.unrestricted,
           onWebViewCreated: (WebViewController webViewController) {
             _controller = webViewController;
+          },
+          navigationDelegate: (request) {
+            bool isHost = request.url.startsWith("https://flutter.dev");
+            if (!isHost) return NavigationDecision.prevent;
           },
         ),
       ),
